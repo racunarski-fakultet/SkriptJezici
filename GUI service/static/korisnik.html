@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="public/CSS/izgled.css" type="text/css">
+<script src="public/JS/korisnikf.js" type="text/javascript"></script>
+</head>
+
+<body onload="init()">
+
+		<label for="id">ID:</label>
+		<input type="text" id="id" name="id"/>
+
+		<label for="primalacId">Primalac ID:</label>
+		<input type="text" id="primalacId" name="primalacId"/>
+
+		<label for="povlastice">Povlastice:</label>
+		<input type="text" id="povlastice" name="povlastice"/>
+
+
+		<label for="korisnickoIme">Korisnicko ime:</label>
+		<input type="text" id="korisnickoIme" name="korisnickoIme"/>
+
+		<label for="lozinka">Lozinka:</label>
+		<input type="text" id="lozinka" name="lozinka"/>
+
+		<label for="datumRegistracije">Datum registracije:</label>
+		<input type="text" id="datumRegistracije" name="datumRegistracije"/>
+		<input type="button" value='Upisi' id="posalji"/>
+		<br/>
+	
+	ID:<input type="text" id="iddelete" name="iddelete"/>
+	<input type="button" value='Izbrisi' id="izbrisi"/>
+	<br/>
+	
+	ID:					<input type="text" id="iid" />
+	Primalac ID:		<input type="text" id="iprimalacId" />
+	Povlastice:		<input type="text" id="ipovlastice" />
+	Kosrinsicko Ime:				<input type="text" id="ikorisnickoIme" />
+	Lozinka:		<input type="text" id="ilozinka" />
+	Datum Registracije:		<input type="text" id="idatumRegistracije" />
+						<input type="button" value='Izmeni' id="izmeni"/>
+		<ul id="lista"></ul>
+</body>
+
+
+</html>
