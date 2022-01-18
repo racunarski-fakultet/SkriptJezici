@@ -19,4 +19,3 @@ function adresaKorisnik(){
 function adresaKorisnikPorudzbina(){
     open("/admin/korisnik-porudzbina","_self");
 }
-

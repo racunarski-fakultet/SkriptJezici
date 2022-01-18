@@ -119,8 +119,8 @@ ruter.post("/", async(req,res)=>{
 
   //sifrovanje lozinke
   try {
-    par3=await bcrypt.hash(req.body.lozinka, 10);
-    par3="'"+par3+"'";
+    par5=await bcrypt.hash(req.body.lozinka, 10);
+    par5="'"+par5+"'";
   } catch {
     res.status(500).send();
   }
@@ -133,14 +133,33 @@ ruter.post("/", async(req,res)=>{
   }
   else{
     try{
-      db.sequelize.query("INSERT INTO Korisnik values ("+par1+","+par2+","+par3+","+par4+","+par5+","+par6+")")
-      res.send(result);
+    let result=db.sequelize.query("INSERT INTO Korisnik values ("+par1+","+par2+","+par3+","+par4+","+par5+","+par6+")")
+      res.send(result).status(200);
     }
     catch{
       res.status(500).send();
     }
 
 }});
+
+
+//delete
+ruter.delete("/", (req,res)=>{
+
+  let { value,error } = semad.validate(req.body);
+  if(typeof error !== 'undefined'){
+    res.status(400).send(error.details);
+  }
+  else{
+  const param1=req.body.id;
+  db.sequelize.query("DELETE FROM Korisnik WHERE Id="+param1)
+  .then(function(result) {res.send(result);})
+  .catch( err => res.status(500).json(err) );
+  }
+});
+
+
+
 
 ruter.post("/register", async(req,res)=>{
   const par1=Math.floor((Math.random() * 1000000) + 1);
@@ -167,20 +186,53 @@ ruter.post("/register", async(req,res)=>{
     res.status(500).send();
   }
   }
-
 });
-//delete
-ruter.delete("/", (req,res)=>{
-  const param1=req.body.id;
 
-  let { value,error } = semad.validate(req.body);
+
+ruter.post("/checkUserPrivilage", async(req,res)=>{
+  const par1="'"+req.body.korisnickoIme+"'";
+  let par2=req.body.lozinka;
+
+  //PROVERAVAMO ISPRAVNOST
+  let { value,error } = semar.validate(req.body);
   if(typeof error !== 'undefined'){
+    console.log("neispravan format");
     res.status(400).send(error.details);
   }
   else{
-  res.send(db.sequelize.query("DELETE FROM Korisnik WHERE Id="+param1))  
-  .then(function(result) {res.send(result);})
-  .catch( err => res.status(500).json(err) );
+    try{
+  //dobavljamo podatke iz baze
+  const result = await db.sequelize.query("SELECT Povlastice,Lozinka FROM Korisnik WHERE KorisnickoIme="+par1,{type: sequelize.QueryTypes.SELECT});
+      console.log(result);
+  //uporedjujemo lozinku
+  let lozinka;
+  result.forEach( el => {lozinka = el.Lozinka; });
+
+
+  if(!bcrypt.compareSync(par2, lozinka)){
+    res.status(500).send("Greska u lozinci ili korisnickom imenu");
+    console.log("Lozinke se ne podudaraju");
+  }
+  else{
+    //u zavisnosti od vrednosti vracamo povlastice
+    let povlastice;
+    result[0].forEach( el => {povlastice = el.Povlastice;});
+
+    let odgovor; 
+    if(povlastice==='a')
+      odgovor = {dozvola: 'a'};
+    if(povlastice==='m')
+      odgovor = {dozvola: 'm'};
+    if(povlastice !=='a' || povlastice!=='m')
+      odgovor = {dozvola: '0'};
+  res.status(200).json(odgovor);
+  
+    }
+  }
+  catch(err){
+    console.log("Nesto je poslo po zlu"+err);
+    res.status(500).send();
+  }
   }
 });
 

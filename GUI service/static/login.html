@@ -2,19 +2,21 @@
 <html>
 <head>
 <link rel="stylesheet" href="public/CSS/izgled.css" type="text/css">
+<script src="public/JS/loginf.js" type="text/javascript"></script>
 </head>
 
-<body>
-<form method="post">
+<body onload="init()">
+
 Korisnicko ime:<br/>
-<input type="text"/>
+<input type="text" id="korisnickoIme"/>
 <br/>
 Lozinka:<br/>
-<input type="password">
+<input type="password" id="lozinka">
 <br/>
-<input type="submit" value="Log in" method="POST">
-</form>
-
+<button  id="dugme">Log in</button>
+<br/>
+<button  id="testAuth">TEST AUTH</button>
+<button  id="testAuthkm">TEST AUTHM</button>
 </body>
 
 

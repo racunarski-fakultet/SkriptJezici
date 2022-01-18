@@ -77,7 +77,7 @@ function init() {
         document.getElementById('korisnickoIme').value='';
         document.getElementById('lozinka').value='';
         document.getElementById('datumRegistracije').value='';
-
+		console.log(overiIO(data.id) +" "+ overiIO(data.primalacId) +" "+ overiTO(data.povlastice)+" "+ overiTO(data.korisnickoIme)+" "+ overiTO(data.lozinka)+" "+ overiTO(data.datumRegistracije));
         if(overiIO(data.id) && overiIO(data.primalacId) && overiTO(data.povlastice)&& overiTO(data.korisnickoIme)&& overiTO(data.lozinka)&& overiTO(data.datumRegistracije)){
         fetch('http://localhost/admin/korisnik', {
             method: 'POST',
@@ -106,7 +106,7 @@ function init() {
             let lsta = document.getElementById('lista');
             if(typeof data[0] !=='undefined')
             data[0].forEach( el => {
-                lsta.innerHTML += `<li>ID: ${el.Id}, primalacId: ${el.PrimalacId}, povlastice: ${el.Povlastice}, korisnickoIme: ${el.KorisnickoIme}, lozinka: ${el.Lozinka}, datumRegistracije: ${el.DatumRegistracije}</li>`;
+                lsta.innerHTML += `<li>ID: ${el.Id}, primalacId: ${el.PrimalacId}, povlastice: ${el.Povlastice}, korisnickoIme: ${el.KorisnickoIme}, lozinka: ${el.Lozinka}, datumRegistracije: ${el.DatumRegistacije}</li>`;
             });
         });
 
