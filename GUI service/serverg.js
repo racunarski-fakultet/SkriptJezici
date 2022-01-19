@@ -1,7 +1,11 @@
 const express =require("express");
 const app=express();
 const path=require("path");
+const cors = require('cors');
 
+
+
+app.use(cors({ origin: true, credentials: true }));
 app.use('/admin/',express.static(path.join(__dirname,"static")));
 const index=require(path.join(__dirname,'index.js'));
 const login=require(path.join(__dirname,'login.js'));

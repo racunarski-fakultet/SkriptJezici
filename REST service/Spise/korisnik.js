@@ -1,5 +1,4 @@
 const ekspres = require("express");
-const path=require("path");
 const ruter=ekspres.Router();
 const db = require("./models/db-export.js");
 const joi=require("Joi");
@@ -19,7 +18,7 @@ const semai=joi.object({
   primalacId:        joi.number().integer().required(),
   povlastice:        joi.string().max(50).required(),
   korisnickoIme:     joi.string().max(50).required(),
-  lozinka:           joi.string().max(50).required(),
+  lozinka:           joi.string().max(256).required(),
   datumRegistracije: joi.string().max(50).required()
 });
 const semad=joi.object({
@@ -30,13 +29,19 @@ const semau=joi.object({
   primalacId:        joi.number().integer().allow(''),
   povlastice:        joi.string().max(50).allow(''),
   korisnickoIme:     joi.string().max(50).allow(''),
-  lozinka:           joi.string().max(100).allow(''),
+  lozinka:           joi.string().max(256).allow(''),
   datumRegistracije: joi.string().max(50).allow('')
 });
 
 const semar=joi.object({
   korisnickoIme:     joi.string().max(50).required(),
   lozinka:           joi.string().max(50).required(),
+  povlastice:        joi.string().max(50).required()
+});
+
+const semac=joi.object({
+  korisnickoIme:     joi.string().max(50).required(),
+  lozinka:           joi.string().max(50).required()
 });
 
 ruter.use(ekspres.json());
@@ -144,7 +149,7 @@ ruter.post("/", async(req,res)=>{
 
 
 //delete
-ruter.delete("/", (req,res)=>{
+ruter.delete("/", async(req,res)=>{
 
   let { value,error } = semad.validate(req.body);
   if(typeof error !== 'undefined'){
@@ -165,27 +170,31 @@ ruter.post("/register", async(req,res)=>{
   const par1=Math.floor((Math.random() * 1000000) + 1);
   const par2="'"+req.body.korisnickoIme+"'";
   let par3="'"+req.body.lozinka+"'";
+  const par4="'"+req.body.povlastice+"'";
 
   try {
-    par3=await bcrypt.hash(req.body.lozinka, 10);
+    par3= await bcrypt.hash(req.body.lozinka,10);
     par3="'"+par3+"'";
-  } catch {
-    res.status(500).send();
+  } 
+  catch {
+    res.status(500).send("gresak u desifrovanju");
   }
 
+  let result;
   let { value,error } = semar.validate(req.body);
   if(typeof error !== 'undefined'){
     res.status(400).send(error.details);
   }
   else{
     try{
-  const result = db.sequelize.query("INSERT INTO Korisnik (id,korisnickoIme,lozinka) values ("+par1+","+par2+","+par3+")")
-  res.send(result);
-    }
-  catch{
-    res.status(500).send();
+      result =  db.sequelize.query("INSERT INTO Korisnik (id,povlastice,korisnickoIme,lozinka) values ("+par1+","+par4+","+par2+","+par3+")");
+      res.send(result).status(200);
+      }
+    catch{
+      res.status(500).send("greska sa bazom");
   }
   }
+
 });
 
 
@@ -194,7 +203,7 @@ ruter.post("/checkUserPrivilage", async(req,res)=>{
   let par2=req.body.lozinka;
 
   //PROVERAVAMO ISPRAVNOST
-  let { value,error } = semar.validate(req.body);
+  let { value,error } = semac.validate(req.body);
   if(typeof error !== 'undefined'){
     console.log("neispravan format");
     res.status(400).send(error.details);
@@ -202,12 +211,11 @@ ruter.post("/checkUserPrivilage", async(req,res)=>{
   else{
     try{
   //dobavljamo podatke iz baze
-  const result = await db.sequelize.query("SELECT Povlastice,Lozinka FROM Korisnik WHERE KorisnickoIme="+par1,{type: sequelize.QueryTypes.SELECT});
-      console.log(result);
+  const result = await db.sequelize.query("SELECT Povlastice,Lozinka FROM Korisnik WHERE KorisnickoIme="+par1,{type: db.sequelize.QueryTypes.SELECT});
+  //console.log(result[0].Povlastice +" "+result[0].Lozinka);
   //uporedjujemo lozinku
-  let lozinka;
-  result.forEach( el => {lozinka = el.Lozinka; });
-
+  let povlastice=result[0].Povlastice;
+  let lozinka=result[0].Lozinka;
 
   if(!bcrypt.compareSync(par2, lozinka)){
     res.status(500).send("Greska u lozinci ili korisnickom imenu");
@@ -215,17 +223,14 @@ ruter.post("/checkUserPrivilage", async(req,res)=>{
   }
   else{
     //u zavisnosti od vrednosti vracamo povlastice
-    let povlastice;
-    result[0].forEach( el => {povlastice = el.Povlastice;});
-
     let odgovor; 
     if(povlastice==='a')
-      odgovor = {dozvola: 'a'};
+      odgovor = {povlastice: 'a'};
     if(povlastice==='m')
-      odgovor = {dozvola: 'm'};
-    if(povlastice !=='a' || povlastice!=='m')
-      odgovor = {dozvola: '0'};
-  res.status(200).json(odgovor);
+      odgovor = {povlastice: 'm'};
+    if(povlastice !=='a' && povlastice!=='m')
+      odgovor = {povlastice: '0'};
+  res.status(200).send(odgovor);
   
     }
   }
