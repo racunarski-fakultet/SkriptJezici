@@ -83,7 +83,6 @@ app.post('/login', async(req, res) => {
 
 app.post('/auth', (req, res) => {
     let token=/*req.cookies['token'];*/req.body.povlastice;
-    console.log(token);
     if(token=== 'undefined')
         res.status(500).send("Nemate kolacic");
 
@@ -102,7 +101,6 @@ app.post('/auth', (req, res) => {
 
 app.post('/authm', (req, res) => {
     let token=/*req.cookies['token'];*/req.body.povlastice;
-    console.log(token);
     if(token=== 'undefined')
         res.status(500).send("Nemate kolacic");
 

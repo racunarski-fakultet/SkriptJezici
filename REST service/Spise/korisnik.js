@@ -4,6 +4,32 @@ const db = require("./models/db-export.js");
 const joi=require("Joi");
 const cors = require('cors');
 const bcrypt=require('bcrypt');
+const fetch = require('node-fetch');
+const cookieParser = require('cookie-parser');
+
+
+async function overiPovlastice(req){
+  
+  let token=req.cookies['token'];
+  data={
+    povlastice:token
+  };
+
+  vrednost=await fetch('http://localhost:11000/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:JSON.stringify(data)
+  }).then(res=>{
+    if(res.status===400 || res.status===500){
+      return false;
+      
+    }
+    else{
+      return true;
+    }
+    });
+    return vrednost;
+}
 
 
 var corsOptions = {
@@ -47,17 +73,24 @@ const semac=joi.object({
 
 ruter.use(ekspres.json());
 ruter.use(ekspres.urlencoded({ extended: true }));
+ruter.use(cookieParser());
 
 //GET
-ruter.get("/", (req,res)=>{
-  
+ruter.get("/", async(req,res)=>{
+  console.log(overiPovlastice(req)===false);
+  if(await overiPovlastice(req)===false)
+    res.status(500).send("nemate povlasticu");
+  else
   db.sequelize.query('SELECT * FROM Korisnik')
   .then(function(result) {res.send(result);})
   .catch( err => res.status(500).json(err) );
 });
   
 //Update
-ruter.put("/",  (req,res)=>{
+ruter.put("/",  async(req,res)=>{
+  if(await overiPovlastice(req)===false)
+    res.status(500).send("nemate povlasticu");
+  else{
   let br=0;
   let text="UPDATE Korisnik SET "
   const par1=req.body.id;
@@ -111,11 +144,15 @@ ruter.put("/",  (req,res)=>{
   .then(function(result) {res.send(result);})
   .catch( err => res.status(500).json(err) );
     }
+  }
 
 });
 
 //insert
 ruter.post("/", async(req,res)=>{
+  if(await overiPovlastice(req)===false)
+  res.status(500).send("nemate povlasticu");
+else{
   const par1=req.body.id;
   const par2="'"+req.body.primalacId+"'";
   const par3="'"+req.body.povlastice+"'";
@@ -145,12 +182,15 @@ ruter.post("/", async(req,res)=>{
     catch{
       res.status(500).send();
     }
-
+  }
 }});
 
 
 //delete
 ruter.delete("/", async(req,res)=>{
+  if(await overiPovlastice(req)===false)
+  res.status(500).send("nemate povlasticu");
+else{
 
   let { value,error } = semad.validate(req.body);
   if(typeof error !== 'undefined'){
@@ -162,6 +202,7 @@ ruter.delete("/", async(req,res)=>{
   .then(function(result) {res.send(result);})
   .catch( err => res.status(500).json(err) );
   }
+}
 });
 
 

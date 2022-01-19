@@ -111,16 +111,12 @@ function init() {
             credentials: 'include',
         }).then( res => res.json())
         .then( data => {
-            if(res.status==400 || res.status==500){
-                open("/admin/index","_self");
-            }
-            else{
                 let lsta = document.getElementById('lista');
                 if(typeof data[0] !=='undefined')
                 data[0].forEach( el => {
                     lsta.innerHTML += `<li>ID: ${el.Id}, drzava: ${el.Drzava}, grad: ${el.Grad}, postanskiBroj: ${el.PostanskiBroj}, ulica: ${el.Ulica}, brojstana: ${el.BrojStana}</li>`;
                 })  .catch( err => console.log(err) );
-        }
+        
         });
 
 }

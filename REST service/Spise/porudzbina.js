@@ -4,6 +4,32 @@ const ruter=ekspres.Router();
 const db = require("./models/db-export.js");
 const joi=require("Joi");
 const cors = require('cors')
+const fetch = require('node-fetch');
+const cookieParser = require('cookie-parser');
+
+
+async function overiPovlastice(req){
+  
+  let token=req.cookies['token'];
+  data={
+    povlastice:token
+  };
+
+  vrednost=await fetch('http://localhost:11000/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:JSON.stringify(data)
+  }).then(res=>{
+    if(res.status===400 || res.status===500){
+      return false;
+      
+    }
+    else{
+      return true;
+    }
+    });
+    return vrednost;
+}
 
 
 var corsOptions = {
@@ -36,7 +62,7 @@ const semau=joi.object({
 
 ruter.use(ekspres.json());
 ruter.use(ekspres.urlencoded({ extended: true }));
-
+ruter.use(cookieParser());
 
 
 //GET
