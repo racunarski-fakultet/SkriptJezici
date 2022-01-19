@@ -1,13 +1,39 @@
 const ekspres = require("express");
-const path=require("path");
 const ruter=ekspres.Router();
 const db = require("./models/db-export.js");
 const joi=require("Joi");
-const cors = require('cors')
+const cors = require('cors');
+const fetch = require('node-fetch');
+const cookieParser = require('cookie-parser');
 
+
+function overiPovlastice(req){
+  
+  let token=req.cookies['token'];
+  console.log(token);
+  data={
+    povlastice:token
+  };
+
+  fetch('http://localhost:11000/authm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:JSON.stringify(data)
+}).then(res=>{
+  console.log(res.status);
+    if(res.status==400 && res.status==500){
+      return false;
+      
+    }
+    else{
+        return true;}
+    });
+
+}
 
 var corsOptions = {
-  origin: 'http://localhost:9000',
+    origin: true,
+    credentials: true,
   optionsSuccessStatus: 200
 }
 
@@ -37,10 +63,13 @@ const semma=joi.object({
 
 ruter.use(ekspres.json());
 ruter.use(ekspres.urlencoded({ extended: true }));
+ruter.use(cookieParser);
 
 //GET
 ruter.get("/", (req,res)=>{
-  
+  if(overiPovlastice(req)==false)
+    res.status(500).send("nemate povlasticu");
+
   db.sequelize.query('SELECT * FROM Adresa')
   .then(function(result) {res.send(result);})
   .catch( err => res.status(500).json(err) );

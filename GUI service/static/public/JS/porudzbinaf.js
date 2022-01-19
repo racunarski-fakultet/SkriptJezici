@@ -9,7 +9,8 @@ function init() {
         if(overiIO(data.id)){
         fetch('http://localhost/admin/porudzbina', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -32,7 +33,7 @@ function init() {
         naznake: document.getElementById('inaznake').value,
         status: document.getElementById('istatus').value,
         vremeNastanka: document.getElementById('ivremeNastanka').value,
-        vremeIsporuke: document.getElementById('ivremeIsporuke').value
+        korisnikId: document.getElementById('ikorisnikId').value
         };
 
         document.getElementById('iid').value='';
@@ -40,12 +41,13 @@ function init() {
         document.getElementById('inaznake').value='';
         document.getElementById('istatus').value='';
         document.getElementById('ivremeNastanka').value='';
-        document.getElementById('ivremeIsporuke').value='';
+        document.getElementById('ikorisnikId').value='';
 
-        if(overiIO(data.id) && overiI(data.proizvodId) && overiI(data.naznake)&& overiT(data.status)&& overiT(data.vremeNastanka)&& overiT(data.vremeIsporuke)){
+        if(overiIO(data.id) && overiI(data.proizvodId) && overiT(data.naznake)&& overiT(data.status)&& overiT(data.vremeNastanka)&& overiI(data.korisnikId)){
         fetch('http://localhost/admin/porudzbina', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -69,7 +71,7 @@ function init() {
         naznake: document.getElementById('naznake').value,
         status: document.getElementById('status').value,
         vremeNastanka: document.getElementById('vremeNastanka').value,
-        vremeIsporuke: document.getElementById('vremeIsporuke').value
+        korisnikId: document.getElementById('korisnikId').value
         };
 
         document.getElementById('id').value='';
@@ -77,12 +79,14 @@ function init() {
         document.getElementById('naznake').value='';
         document.getElementById('status').value='';
         document.getElementById('vremeNastanka').value='';
-        document.getElementById('vremeIsporuke').value='';
+        document.getElementById('korisnikId').value='';
 
-        if(overiIO(data.id) && overiIO(data.proizvodId) && overiIO(data.naznake)&& overiTO(data.status)&& overiTO(data.vremeNastanka)&& overiTO(data.vremeIsporuke)){
+
+        if(overiIO(data.id) && overiIO(data.proizvodId) && overiTO(data.naznake)&& overiTO(data.status)&& overiTO(data.vremeNastanka)&& overiIO(data.korisnikId)){
         fetch('http://localhost/admin/porudzbina', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -100,14 +104,15 @@ function init() {
 
     fetch('http://localhost/admin/porudzbina', {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
         }).then( res => res.json())
         .then( data => {
             console.log(data)
             let lsta = document.getElementById('lista');
             if(typeof data[0] !=='undefined')
             data[0].forEach( el => {
-                lsta.innerHTML += `<li>ID: ${el.Id}, proizvod Id: ${el.ProizvodId}, primalac Id: ${el.Naznake}, status: ${el.Status}, Vreme Nastanka: ${el.VremeNastanka}, vreme Isporuke: ${el.VremeIsporuke}</li>`;
+                lsta.innerHTML += `<li>ID: ${el.Id}, proizvod Id: ${el.ProizvodId}, naznake: ${el.Naznake}, status: ${el.Status}, Vreme Nastanka: ${el.VremeNastanka}, Korisnik Id: ${el.KorisnikId}</li>`;
             });
         });
 

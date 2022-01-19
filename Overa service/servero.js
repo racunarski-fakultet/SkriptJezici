@@ -52,7 +52,7 @@ app.post('/login', async(req, res) => {
         lozinka:par2
     }
     
-    //proverи da li postoji nalog i dobij odgovor
+    
 
     await fetch('http://localhost/admin/korisnik/checkUserPrivilage', {
         method: 'POST',
@@ -82,15 +82,15 @@ app.post('/login', async(req, res) => {
 
 
 app.post('/auth', (req, res) => {
-    let token=req.cookies['token'];
+    let token=/*req.cookies['token'];*/req.body.povlastice;
+    console.log(token);
     if(token=== 'undefined')
         res.status(500).send("Nemate kolacic");
 
     
     try{
         const povlastice=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-        console.log(povlastice.povlastice);
-        if(povlastice.povlastice==='a' || povlastice.povlastice==='m')
+        if(povlastice.povlastice==='a' /*|| povlastice.povlastice==='m'*/)
             res.status(200).send("Uspesno ste ulogovani");
         else
             res.status(400).send("Nemate dobar kolacic");
@@ -101,14 +101,14 @@ app.post('/auth', (req, res) => {
 });
 
 app.post('/authm', (req, res) => {
-    let token=req.cookies['token'];
+    let token=/*req.cookies['token'];*/req.body.povlastice;
+    console.log(token);
     if(token=== 'undefined')
         res.status(500).send("Nemate kolacic");
 
     
     try{
         const povlastice=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
-        console.log(povlastice.povlastice);
         if(povlastice.povlastice==='m')
             res.status(200).send("Uspesno ste ulogovani");
         else
@@ -122,7 +122,4 @@ app.post('/authm', (req, res) => {
 
 app.listen({ port: 11000 });
 
-//ne sacuva mi kolacic
-
-//authm i auth trebaju da dobiju kolacic i da procitaju lozinku
-//svaka stranica treba da implementira proveru
+//nece da dodje do ovog servisa preko resta

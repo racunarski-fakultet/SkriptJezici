@@ -9,7 +9,8 @@ function init() {
         if(overiIO(data.id)){
         fetch('http://localhost/admin/primalac', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -45,7 +46,8 @@ function init() {
         if(overiIO(data.id) && overiT(data.ime) && overiT(data.prezime)&& overiT(data.telefon)&& overiI(data.adresaId)){
         fetch('http://localhost/admin/primalac', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -81,7 +83,8 @@ function init() {
         if(overiIO(data.id) && overiTO(data.ime) && overiTO(data.prezime)&& overiTO(data.telefon)&& overiIO(data.adresaId)){
         fetch('http://localhost/admin/primalac', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -99,7 +102,8 @@ function init() {
 
     fetch('http://localhost/admin/primalac', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+        credentials: 'include',
     }).then( res => res.json())
     .then( data => {
         console.log(data)

@@ -7,7 +7,8 @@ const bcrypt=require('bcrypt');
 
 
 var corsOptions = {
-  origin: 'http://localhost:9000',
+    origin: true,
+    credentials: true,
   optionsSuccessStatus: 200
 }
 

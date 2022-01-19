@@ -7,7 +7,8 @@ const cors = require('cors')
 
 
 var corsOptions = {
-  origin: 'http://localhost:9000',
+  origin: true,
+  credentials: true,
   optionsSuccessStatus: 200
 }
 
@@ -16,7 +17,8 @@ const semai=joi.object({
   id:                 joi.number().integer().required(),
   opis:               joi.string().max(50).required(),
   naslov:             joi.string().max(200).required(),
-  slikaPokazivac:     joi.string().max(50).required()
+  slikaPokazivac:     joi.string().max(50).required(),
+  cena:               joi.number().integer().required()
 });
 const semad=joi.object({
   id:             joi.number().integer().required(),
@@ -25,7 +27,8 @@ const semau=joi.object({
   id:                 joi.number().integer().required(),
   opis:               joi.string().max(50).allow(''),
   naslov:             joi.string().max(200).allow(''),
-  slikaPokazivac:     joi.string().max(50).allow('')
+  slikaPokazivac:     joi.string().max(50).allow(''),
+  cena:               joi.number().integer().allow('')
 });
 
 
@@ -47,6 +50,7 @@ ruter.put("/",  (req,res)=>{
   const par2=req.body.naslov;
   const par3=req.body.opis;
   const par4=req.body.slikaPokazivac;
+  const par5=req.body.cena;
 
 
   if(par2 !== null && par2!=='' && typeof par2!=='undefined'){
@@ -63,6 +67,12 @@ ruter.put("/",  (req,res)=>{
     if(br>0)
       text+=" , "
     text+="SlikaPokazivac='"+par4+"'";
+    br++;
+  }
+  if(par5 !== null && par5!=='' && typeof par5!=='undefined'){
+    if(br>0)
+      text+=" , "
+    text+="cena='"+par5+"'";
     br++;
   }
 
@@ -90,6 +100,7 @@ ruter.post("/", (req,res)=>{
   const par2="'"+req.body.naslov+"'";
   const par3="'"+req.body.opis+"'";
   const par4="'"+req.body.slikaPokazivac+"'";
+  const par5=req.body.cena;
 
 
   let { value,error } = semai.validate(req.body);
@@ -97,11 +108,13 @@ ruter.post("/", (req,res)=>{
     res.status(400).send(error.details);
   }
   else{
-  db.sequelize.query("INSERT INTO Proizvod values ("+par1+","+par2+","+par3+","+par4+")")
+  db.sequelize.query("INSERT INTO Proizvod values ("+par1+","+par2+","+par3+","+par4+","+par5+")")
   .then(function(result) {res.send(result);})
   .catch( err => res.status(500).json(err) );
   }
 });
+
+
 //delete
 ruter.delete("/", (req,res)=>{
   const param1=req.body.id;

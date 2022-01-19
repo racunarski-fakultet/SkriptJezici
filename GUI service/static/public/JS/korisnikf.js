@@ -9,7 +9,8 @@ function init() {
         if(overiIO(data.id)){
         fetch('http://localhost/admin/korisnik', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -44,7 +45,8 @@ function init() {
         if(overiIO(data.id) && overiI(data.primalacId) && overiT(data.povlastice)&& overiT(data.korisnickoIme)&& overiT(data.lozinka)&& overiT(data.datumRegistracije)){
         fetch('http://localhost/admin/korisnik', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -81,7 +83,8 @@ function init() {
         if(overiIO(data.id) && overiIO(data.primalacId) && overiTO(data.povlastice)&& overiTO(data.korisnickoIme)&& overiTO(data.lozinka)&& overiTO(data.datumRegistracije)){
         fetch('http://localhost/admin/korisnik', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -99,14 +102,15 @@ function init() {
 
     fetch('http://localhost/admin/korisnik', {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
         }).then( res => res.json())
         .then( data => {
             console.log(data)
             let lsta = document.getElementById('lista');
             if(typeof data[0] !=='undefined')
             data[0].forEach( el => {
-                lsta.innerHTML += `<li>ID: ${el.Id}, primalacId: ${el.PrimalacId}, povlastice: ${el.Povlastice}, korisnickoIme: ${el.KorisnickoIme}, lozinka: ${el.Lozinka}, datumRegistracije: ${el.DatumRegistacije}</li>`;
+                lsta.innerHTML += `<li>ID: ${el.Id}, primalacId: ${el.PrimalacId}, povlastice: ${el.Povlastice}, korisnickoIme: ${el.KorisnickoIme}, lozinka: ${el.Lozinka}, datumRegistracije: ${el.DatumRegistracije}</li>`;
             });
         });
 

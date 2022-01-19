@@ -11,7 +11,8 @@ function init() {
         if(overiIO(data.id)){
         fetch('http://localhost/admin/adresa', {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         })
         .then(res=>{
@@ -49,7 +50,8 @@ function init() {
         if(overiIO(data.id) && overiT(data.drzava) && overiT(data.grad)&& overiT(data.postanskiBroj)&& overiT(data.ulica)&& overiI(data.brojstana)){
         fetch('http://localhost/admin/adresa', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }) .then(res=>{
             if(res.status!=400 && res.status!=500)
@@ -85,7 +87,8 @@ function init() {
         if(overiIO(data.id) && overiTO(data.drzava) && overiTO(data.grad)&& overiTO(data.postanskiBroj)&& overiTO(data.ulica)&& overiIO(data.brojstana)){
         fetch('http://localhost/admin/adresa', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(res=>{
                 if(res.status!=400 && res.status!=500)
@@ -104,16 +107,20 @@ function init() {
 	
 	fetch('http://localhost/admin/adresa', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: { 'Content-Type': 'application/json' ,'Access-Control-Allow-Origin': '*'},
+            credentials: 'include',
         }).then( res => res.json())
         .then( data => {
-            let lsta = document.getElementById('lista');
-            if(typeof data[0] !=='undefined')
-            data[0].forEach( el => {
-                lsta.innerHTML += `<li>ID: ${el.Id}, drzava: ${el.Drzava}, grad: ${el.Grad}, postanskiBroj: ${el.PostanskiBroj}, ulica: ${el.Ulica}, brojstana: ${el.BrojStana}</li>`;
-            })  .catch( err => console.log(err) );
+            if(res.status==400 || res.status==500){
+                open("/admin/index","_self");
+            }
+            else{
+                let lsta = document.getElementById('lista');
+                if(typeof data[0] !=='undefined')
+                data[0].forEach( el => {
+                    lsta.innerHTML += `<li>ID: ${el.Id}, drzava: ${el.Drzava}, grad: ${el.Grad}, postanskiBroj: ${el.PostanskiBroj}, ulica: ${el.Ulica}, brojstana: ${el.BrojStana}</li>`;
+                })  .catch( err => console.log(err) );
+        }
         });
 
 }

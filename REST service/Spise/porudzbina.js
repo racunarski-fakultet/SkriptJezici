@@ -7,7 +7,8 @@ const cors = require('cors')
 
 
 var corsOptions = {
-  origin: 'http://localhost:9000',
+    origin: true,
+    credentials: true,
   optionsSuccessStatus: 200
 }
 
@@ -18,7 +19,7 @@ const semai=joi.object({
   naznake:           joi.string().max(50).required(),
   status:            joi.string().max(50).required(),
   vremeNastanka:     joi.string().max(50).required(),
-  vremeIsporuke:     joi.string().max(50).required()
+  korisnikId:     joi.string().max(50).required()
 });
 const semad=joi.object({
   id:                joi.number().integer().required(),
@@ -29,7 +30,7 @@ const semau=joi.object({
   naznake:           joi.string().max(50).allow(''),
   status:            joi.string().max(50).allow(''),
   vremeNastanka:     joi.string().max(50).allow(''),
-  vremeIsporuke:     joi.string().max(50).allow('')
+  korisnikId:     joi.string().max(50).allow('')
 });
 
 
@@ -54,7 +55,7 @@ ruter.put("/",  (req,res)=>{
   const par3=req.body.naznake;
   const par4=req.body.status;
   const par5=req.body.vremeNastanka;
-  const par6=req.body.vremeIsporuke;
+  const par6=req.body.korisnikId;
 
 
   if(par2 !== null && par2!=='' && typeof par2!=='undefined'){
@@ -64,7 +65,7 @@ ruter.put("/",  (req,res)=>{
   if(par3 !== null && par3!=='' && typeof par3!=='undefined'){
     if(br>0)
       text+=" , "
-    text+="Naznake="+par3;
+    text+="Naznake='"+par3+"'";
     br++;
   }
   if(par4 !== null && par4!=='' && typeof par4!=='undefined'){
@@ -82,7 +83,7 @@ ruter.put("/",  (req,res)=>{
   if(par6 !== null && par6!=='' && typeof par6!=='undefined'){
     if(br>0)
       text+=" , "
-    text+="VremeIsporuke="+par6;
+    text+="KorisnikId="+par6;
     br++;
   }
 
@@ -107,10 +108,10 @@ ruter.put("/",  (req,res)=>{
 ruter.post("/", (req,res)=>{
   const par1=req.body.id;
   const par2=req.body.proizvodId;
-  const par3=req.body.naznake;
+  const par3="'"+req.body.naznake+"'";
   const par4="'"+req.body.status+"'";
   const par5="'"+req.body.vremeNastanka+"'";
-  const par6="'"+req.body.vremeIsporuke+"'";
+  const par6=req.body.korisnikId;
 
   let { value,error } = semai.validate(req.body);
   if(typeof error !== 'undefined'){
